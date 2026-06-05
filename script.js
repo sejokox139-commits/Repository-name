@@ -15,6 +15,9 @@
   const photoPreview = document.getElementById('photoPreview');
   const removePhoto = document.getElementById('removePhoto');
 
+  const SUPABASE_URL = 'https://rsijtyaldlfwxddjqyou.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzaWp0eWFsZGxmd3hkZGpxeW91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTMyMTEsImV4cCI6MjA5NjE4OTIxMX0.rWoGZ1e9cl7NdUvLfO9lc4lb1Jl7jJ_W4pNj79ENXOY';
+
   function getErrorEl(input) {
     switch (input) {
       case fullName: return document.getElementById('nameError');
@@ -226,8 +229,7 @@
       fullName: fullName.value.trim(),
       phone: phone.value.trim(),
       idNumber: idNumber.value.trim(),
-      email: email.value.trim(),
-      date: Date.now()
+      email: email.value.trim()
     };
 
     const file = photo.files[0];
@@ -236,22 +238,26 @@
       reader.onload = function (e) {
         appData.photo = e.target.result;
         saveToLocal(appData);
-        submitToNetlify();
+        submitToSupabase(appData);
       };
       reader.readAsDataURL(file);
     } else {
       appData.photo = '';
       saveToLocal(appData);
-      submitToNetlify();
+      submitToSupabase(appData);
     }
   });
 
-  function submitToNetlify() {
-    var fd = new FormData(form);
-    fetch('/', {
+  function submitToSupabase(data) {
+    fetch(SUPABASE_URL + '/rest/v1/applications', {
       method: 'POST',
-      body: fd,
-      headers: { 'Accept': 'application/json' }
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(data)
     })
     .then(function () {
       submitBtn.classList.remove('loading');
