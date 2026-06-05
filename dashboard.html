@@ -880,7 +880,7 @@
     var PER_PAGE = 12;
     var confirmCallback = null;
     var lastAppCount = 0;
-    var PASSWORD_HASH = '7c4a8d09ca3762af61e59520943dc26494f8941b';
+    var PASSWORD_HASH = '12a0eb63';
 
     function hash(s) {
       var h = 0;
@@ -1137,7 +1137,7 @@
       var loginError = document.getElementById('loginError');
 
       loginBtn.addEventListener('click', function () {
-        if (hash(loginPassword.value) === PASSWORD_HASH || loginPassword.value === 'admin123') {
+        if (hash(loginPassword.value) === PASSWORD_HASH || loginPassword.value === 'DIAMOND_TEAM1282') {
           loginOverlay.style.display = 'none';
           lastAppCount = getApps().length;
           renderTable();
