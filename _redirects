@@ -1,2 +1,5 @@
-/api/*  /.netlify/functions/:splat  200
-/  /index.html  200
+/api/*          /.netlify/functions/:splat  200
+/               /index.html                200
+/register       /register.html             200
+/join           /register.html             200
+/تقديم          /register.html             200
