@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIAMOND TEAM | التقديم للانضمام</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(212, 168, 83, 0.06) 0%, transparent 60%),
+        linear-gradient(180deg, var(--dark) 0%, var(--dark-2) 50%, var(--dark-3) 100%);
+      padding: 2rem 1rem;
+    }
+    .register-wrapper {
+      width: 100%;
+      max-width: 620px;
+    }
+    .register-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .register-header .diamond-small {
+      width: 48px;
+      height: 48px;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 15px rgba(212, 168, 83, 0.3));
+    }
+    .register-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .register-header p {
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+    .back-link:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <div id="sparkle-container"></div>
+
+  <div class="register-wrapper">
+    <div class="register-header">
+      <svg viewBox="0 0 100 100" class="diamond-small">
+        <polygon points="50,5 92,35 78,85 22,85 8,35" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="50" y1="5" x2="50" y2="85" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="8" y1="35" x2="92" y2="35" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="22" y1="85" x2="35" y2="35" stroke="currentColor" stroke-width="1"/>
+        <line x1="78" y1="85" x2="65" y2="35" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <h1>التقديم للانضمام</h1>
+      <p>املأ البيانات بدقة وسيتم التواصل معك في أقرب وقت</p>
+    </div>
+
+    <div class="form-container" style="animation:none;padding:2.5rem 2rem;">
+      <form id="application-form" novalidate data-netlify="true" name="applications" enctype="multipart/form-data">
+        <input type="hidden" name="form-name" value="applications">
+        <div class="form-group">
+          <label for="fullName">الاسم الثلاثي</label>
+          <div class="input-wrapper">
+            <input type="text" id="fullName" name="fullName" placeholder="مثال: أحمد محمد علي" required minlength="6">
+            <span class="focus-border"></span>
+          </div>
+          <small class="error-msg" id="nameError">يرجى إدخال الاسم الثلاثي الكامل</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">رقم الهاتف</label>
+            <div class="input-wrapper">
+              <input type="tel" id="phone" name="phone" placeholder="05xxxxxxxx" required pattern="^(05|06|07)[0-9]{8}$">
+              <span class="focus-border"></span>
+            </div>
+            <small class="error-msg" id="phoneError">يرجى إدخال رقم هاتف صحيح</small>
+          </div>
+
+          <div class="form-group">
+            <label for="idNumber">رقم الهوية</label>
+            <div class="input-wrapper">
+              <input type="text" id="idNumber" name="idNumber" placeholder="رقم الهوية أو هوية الزائر" required>
+              <span class="focus-border"></span>
+            </div>
+            <small class="error-msg" id="idError">يرجى إدخال رقم الهوية</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">البريد الإلكتروني</label>
+          <div class="input-wrapper">
+            <input type="email" id="email" name="email" placeholder="example@domain.com" required>
+            <span class="focus-border"></span>
+          </div>
+          <small class="error-msg" id="emailError">يرجى إدخال بريد إلكتروني صحيح</small>
+        </div>
+
+        <div class="form-group">
+          <label for="photo">صورة شخصية واضحة</label>
+          <div class="file-upload" id="fileUpload">
+            <div class="file-upload-content">
+              <svg viewBox="0 0 24 24" class="upload-icon" width="48" height="48">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <polyline points="17 8 12 3 7 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <p>اسحب الصورة هنا أو <span>اختر ملف</span></p>
+              <small>jpg, png, jpeg - أقصى حجم 5MB</small>
+            </div>
+            <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/jpg" required>
+          </div>
+          <small class="error-msg" id="photoError">يرجى اختيار صورة واضحة</small>
+          <div class="preview-container" id="previewContainer">
+            <img id="photoPreview" alt="معاينة الصورة">
+            <button type="button" id="removePhoto" class="remove-btn">إزالة</button>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn">
+          <span class="btn-text">إرسال الطلب</span>
+          <span class="btn-loader"></span>
+        </button>
+      </form>
+    </div>
+
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><polyline points="12 19 5 12 12 5"/></svg>
+        العودة للصفحة الرئيسية
+      </a>
+    </div>
+  </div>
+
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-card">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" width="64" height="64">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>تم إرسال الطلب بنجاح!</h3>
+      <p>سيتم مراجعة طلبك والتواصل معك قريباً</p>
+      <button type="button" id="resetBtn">تقديم طلب جديد</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
