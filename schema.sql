@@ -8,9 +8,9 @@ DROP TABLE IF EXISTS applications CASCADE;
 
 CREATE TABLE applications (
   id            BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  fullName      TEXT NOT NULL CHECK (char_length(trim(fullName)) >= 6),
+  "fullName"    TEXT NOT NULL CHECK (char_length(trim("fullName")) >= 6),
   phone         TEXT NOT NULL CHECK (phone ~ '^(05|06|07)[0-9]{8}$'),
-  idNumber      TEXT NOT NULL CHECK (char_length(trim(idNumber)) >= 5),
+  "idNumber"    TEXT NOT NULL CHECK (char_length(trim("idNumber")) >= 5),
   email         TEXT NOT NULL CHECK (email ~* '^[^\s@]+@[^\s@]+\.[^\s@]+$'),
   photo         TEXT,
   status        TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
@@ -20,9 +20,9 @@ CREATE TABLE applications (
 );
 
 COMMENT ON TABLE  applications IS 'طلبات المتقدمين للانضمام لفريق DIAMOND TEAM';
-COMMENT ON COLUMN applications.fullName IS 'الاسم الثلاثي';
+COMMENT ON COLUMN applications."fullName" IS 'الاسم الثلاثي';
 COMMENT ON COLUMN applications.phone IS 'رقم الهاتف (سعودي)';
-COMMENT ON COLUMN applications.idNumber IS 'رقم الهوية';
+COMMENT ON COLUMN applications."idNumber" IS 'رقم الهوية';
 COMMENT ON COLUMN applications.email IS 'البريد الإلكتروني';
 COMMENT ON COLUMN applications.photo IS 'الصورة الشخصية (Base64)';
 COMMENT ON COLUMN applications.status IS 'حالة الطلب: pending, accepted, rejected';
@@ -34,7 +34,7 @@ COMMENT ON COLUMN applications.updated_at IS 'آخر تحديث';
 CREATE INDEX idx_applications_status     ON applications (status);
 CREATE INDEX idx_applications_created_at ON applications (created_at DESC);
 CREATE INDEX idx_applications_phone      ON applications (phone);
-CREATE INDEX idx_applications_fullname   ON applications (fullName text_pattern_ops);
+CREATE INDEX idx_applications_fullname   ON applications ("fullName" text_pattern_ops);
 CREATE INDEX idx_applications_email      ON applications (email);
 
 -- 3. دالة لتحديث updated_at تلقائياً
@@ -126,7 +126,7 @@ GRANT USAGE ON SEQUENCE audit_log_id_seq TO anon, authenticated, service_role;
 -- =====================================================
 -- 9. (اختياري) إضافة عينة بيانات للتجربة
 -- =====================================================
-INSERT INTO applications (fullName, phone, idNumber, email, status) VALUES
+INSERT INTO applications ("fullName", phone, "idNumber", email, status) VALUES
   ('أحمد محمد علي', '0551234567', '1098765432', 'ahmed@example.com', 'pending'),
   ('سارة خالد عبدالله', '0569876543', '1076543210', 'sara@example.com', 'accepted'),
   ('فهد ناصر التميمي', '0591122334', '1087654321', 'fahad@example.com', 'rejected'),
