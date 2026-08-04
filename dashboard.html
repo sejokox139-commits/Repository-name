@@ -731,9 +731,9 @@
       </div>
       <h2>لوحة التحكم</h2>
       <p>DIAMOND TEAM — إدارة طلبات المتقدمين</p>
-      <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" autocomplete="username" style="margin-bottom:0.8rem;">
+      <input type="text" id="loginEmail" placeholder="اسم المستخدم" autocomplete="username" style="margin-bottom:0.8rem;">
       <input type="password" id="loginPassword" placeholder="كلمة المرور" autocomplete="current-password">
-      <div class="login-error" id="loginError">البريد الإلكتروني أو كلمة المرور غير صحيحة</div>
+      <div class="login-error" id="loginError">اسم المستخدم أو كلمة المرور غير صحيحة</div>
       <button id="loginBtn">دخول</button>
     </div>
   </div>
@@ -1192,9 +1192,10 @@
       }
 
       function doLogin() {
-        var email = loginEmail.value.trim();
+        var username = loginEmail.value.trim().toLowerCase();
         var password = loginPassword.value;
-        if (!email || !password) return;
+        if (!username || !password) return;
+        var email = username + '@internal.diamondteam';
         loginBtn.disabled = true;
         sb.auth.signInWithPassword({ email: email, password: password }).then(function (res) {
           loginBtn.disabled = false;
