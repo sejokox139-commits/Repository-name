@@ -15,8 +15,8 @@
   const photoPreview = document.getElementById('photoPreview');
   const removePhoto = document.getElementById('removePhoto');
 
-  const SUPABASE_URL = 'https://rsijtyaldlfwxddjqyou.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJzaWp0eWFsZGxmd3hkZGpxeW91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MTMyMTEsImV4cCI6MjA5NjE4OTIxMX0.rWoGZ1e9cl7NdUvLfO9lc4lb1Jl7jJ_W4pNj79ENXOY';
+  const SUPABASE_URL = 'https://igwyjgccjeixuqhrddaj.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlnd3lqZ2NjamVpeHVxaHJkZGFqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4Mjc0NDgsImV4cCI6MjEwMTQwMzQ0OH0.-oGczliol2YQCRuss4wgi_qTC5FeahzBW_TGK9YXtuQ';
 
   function getErrorEl(input) {
     switch (input) {
@@ -259,13 +259,18 @@
       },
       body: JSON.stringify(data)
     })
-    .then(function () {
+    .then(function (res) {
       submitBtn.classList.remove('loading');
+      if (!res.ok) {
+        return res.json().catch(function () { return {}; }).then(function (err) {
+          throw new Error(err.message || ('HTTP ' + res.status));
+        });
+      }
       successOverlay.classList.add('visible');
     })
-    .catch(function () {
+    .catch(function (err) {
       submitBtn.classList.remove('loading');
-      successOverlay.classList.add('visible');
+      alert('تعذر حفظ الطلب، يرجى المحاولة مرة أخرى.\n' + err.message);
     });
   }
 
