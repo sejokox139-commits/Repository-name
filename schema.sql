@@ -65,36 +65,37 @@ CREATE POLICY "allow_insert_anon"
   TO anon
   WITH CHECK (true);
 
--- 6.2 السماح للجميع (anon) بقراءة الطلبات
--- (لأن dashboard.html يستخدم anon key ولا يوجد Auth حقيقي)
--- يمكن تعطيل هذه السياسة لاحقاً عند تفعيل Supabase Auth
-CREATE POLICY "allow_select_anon"
+-- 6.2 القراءة مسموحة فقط لمستخدم مسجّل دخول عبر Supabase Auth (لوحة التحكم)
+CREATE POLICY "allow_select_authenticated"
   ON applications
   FOR SELECT
-  TO anon
+  TO authenticated
   USING (true);
 
--- 6.3 السماح للجميع (anon) بتحديث الطلبات (تغيير الحالة)
-CREATE POLICY "allow_update_anon"
+-- 6.3 التحديث (تغيير الحالة) مسموح فقط لمستخدم مسجّل دخول
+CREATE POLICY "allow_update_authenticated"
   ON applications
   FOR UPDATE
-  TO anon
+  TO authenticated
   USING (true)
   WITH CHECK (true);
 
--- 6.4 السماح للجميع (anon) بحذف الطلبات
-CREATE POLICY "allow_delete_anon"
+-- 6.4 الحذف مسموح فقط لمستخدم مسجّل دخول
+CREATE POLICY "allow_delete_authenticated"
   ON applications
   FOR DELETE
-  TO anon
+  TO authenticated
   USING (true);
 
 -- 7. صلاحيات الأدوار
-GRANT ALL ON applications TO anon;
+-- anon: إدراج طلب جديد فقط (نموذج التقديم العام)، لا قراءة ولا تعديل ولا حذف
+REVOKE ALL ON applications FROM anon;
+GRANT INSERT ON applications TO anon;
+GRANT USAGE ON SEQUENCE applications_id_seq TO anon;
+
 GRANT ALL ON applications TO authenticated;
 GRANT ALL ON applications TO service_role;
 
-GRANT USAGE ON SEQUENCE applications_id_seq TO anon;
 GRANT USAGE ON SEQUENCE applications_id_seq TO authenticated;
 GRANT USAGE ON SEQUENCE applications_id_seq TO service_role;
 
@@ -118,10 +119,10 @@ COMMENT ON COLUMN audit_log.new_status IS 'الحالة الجديدة';
 
 ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "allow_insert_audit_anon"   ON audit_log FOR INSERT TO anon WITH CHECK (true);
-CREATE POLICY "allow_select_audit_anon"   ON audit_log FOR SELECT TO anon USING (true);
-GRANT ALL ON audit_log TO anon, authenticated, service_role;
-GRANT USAGE ON SEQUENCE audit_log_id_seq TO anon, authenticated, service_role;
+CREATE POLICY "allow_select_audit_authenticated" ON audit_log FOR SELECT TO authenticated USING (true);
+REVOKE ALL ON audit_log FROM anon;
+GRANT ALL ON audit_log TO authenticated, service_role;
+GRANT USAGE ON SEQUENCE audit_log_id_seq TO authenticated, service_role;
 
 -- =====================================================
 -- 9. (اختياري) إضافة عينة بيانات للتجربة
