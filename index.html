@@ -75,6 +75,30 @@
           </div>
         </div>
 
+        <div class="form-row">
+          <div class="form-group">
+            <label for="age">العمر</label>
+            <div class="input-wrapper">
+              <input type="number" id="age" name="age" placeholder="مثال: 22" required min="15" max="90">
+              <span class="focus-border"></span>
+            </div>
+            <small class="error-msg" id="ageError">يرجى إدخال عمر صحيح</small>
+          </div>
+
+          <div class="form-group">
+            <label for="center">المركز</label>
+            <div class="input-wrapper">
+              <select id="center" name="center" required>
+                <option value="" disabled selected>اختر المركز</option>
+                <option value="jeddah">مركز جدة</option>
+                <option value="madinah">مركز المدينة المنورة</option>
+              </select>
+              <span class="focus-border"></span>
+            </div>
+            <small class="error-msg" id="centerError">يرجى اختيار المركز</small>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="email">البريد الإلكتروني</label>
           <div class="input-wrapper">
