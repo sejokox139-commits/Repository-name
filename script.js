@@ -5,6 +5,8 @@
   const fullName = document.getElementById('fullName');
   const phone = document.getElementById('phone');
   const idNumber = document.getElementById('idNumber');
+  const age = document.getElementById('age');
+  const center = document.getElementById('center');
   const email = document.getElementById('email');
   const photo = document.getElementById('photo');
   const submitBtn = document.getElementById('submitBtn');
@@ -23,6 +25,8 @@
       case fullName: return document.getElementById('nameError');
       case phone: return document.getElementById('phoneError');
       case idNumber: return document.getElementById('idError');
+      case age: return document.getElementById('ageError');
+      case center: return document.getElementById('centerError');
       case email: return document.getElementById('emailError');
       default: return null;
     }
@@ -46,7 +50,7 @@
   }
 
   function clearAllErrors() {
-    [fullName, phone, idNumber, email].forEach(input => {
+    [fullName, phone, idNumber, age, center, email].forEach(input => {
       const el = getErrorEl(input);
       if (!el) return;
       el.classList.remove('visible');
@@ -93,6 +97,26 @@
     return true;
   }
 
+  function validateAge() {
+    const val = age.value.trim();
+    const num = Number(val);
+    if (!val || !Number.isInteger(num) || num < 15 || num > 90) {
+      showError(age, 'يرجى إدخال عمر صحيح (15 - 90)');
+      return false;
+    }
+    hideError(age);
+    return true;
+  }
+
+  function validateCenter() {
+    if (!center.value) {
+      showError(center, 'يرجى اختيار المركز');
+      return false;
+    }
+    hideError(center);
+    return true;
+  }
+
   function validateEmail() {
     const val = email.value.trim();
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -133,6 +157,8 @@
       case fullName: return validateName();
       case phone: return validatePhone();
       case idNumber: return validateId();
+      case age: return validateAge();
+      case center: return validateCenter();
       case email: return validateEmail();
       case photo: return validatePhoto();
       default: return true;
@@ -142,6 +168,8 @@
   fullName.addEventListener('blur', validateName);
   phone.addEventListener('blur', validatePhone);
   idNumber.addEventListener('blur', validateId);
+  age.addEventListener('blur', validateAge);
+  center.addEventListener('change', validateCenter);
   email.addEventListener('blur', validateEmail);
 
   fullName.addEventListener('input', function () {
@@ -152,6 +180,9 @@
   });
   idNumber.addEventListener('input', function () {
     if (this.classList.contains('error') || this.classList.contains('success')) validateId();
+  });
+  age.addEventListener('input', function () {
+    if (this.classList.contains('error') || this.classList.contains('success')) validateAge();
   });
   email.addEventListener('input', function () {
     if (this.classList.contains('error') || this.classList.contains('success')) validateEmail();
@@ -214,6 +245,8 @@
       validateName() &
       validatePhone() &
       validateId() &
+      validateAge() &
+      validateCenter() &
       validateEmail() &
       validatePhoto();
 
@@ -229,6 +262,8 @@
       fullName: fullName.value.trim(),
       phone: phone.value.trim(),
       idNumber: idNumber.value.trim(),
+      age: Number(age.value.trim()),
+      center: center.value,
       email: email.value.trim()
     };
 
