@@ -259,7 +259,7 @@
 
     .table-header {
       display: grid;
-      grid-template-columns: 40px 1.5fr 1.2fr 1fr 1.2fr 0.8fr 1fr 0.8fr;
+      grid-template-columns: 40px 1.3fr 1fr 0.8fr 0.5fr 0.9fr 1.1fr 0.7fr 0.9fr 0.7fr;
       padding: 0.8rem 1rem;
       background: rgba(255,255,255,0.03);
       border-bottom: 1px solid var(--glass-border);
@@ -278,7 +278,7 @@
 
     .table-row {
       display: grid;
-      grid-template-columns: 40px 1.5fr 1.2fr 1fr 1.2fr 0.8fr 1fr 0.8fr;
+      grid-template-columns: 40px 1.3fr 1fr 0.8fr 0.5fr 0.9fr 1.1fr 0.7fr 0.9fr 0.7fr;
       padding: 0.7rem 1rem;
       border-bottom: 1px solid rgba(255,255,255,0.03);
       align-items: center;
@@ -301,6 +301,8 @@
     .table-row .cell-phone { direction: ltr; text-align: right; color: var(--text-muted); font-size: 0.8rem; }
     .table-row .cell-id { color: var(--text-muted); font-family: monospace; font-size: 0.8rem; }
     .table-row .cell-email { color: var(--gold); font-size: 0.8rem; direction: ltr; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .table-row .cell-age { color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+    .table-row .cell-center { color: var(--text-muted); font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     .table-row .cell-date {
       color: var(--text-muted);
@@ -693,7 +695,7 @@
       .table-header, .table-row {
         grid-template-columns: 30px 1.3fr 1fr 0.8fr 0.8fr 0.7fr;
       }
-      .cell-id, .cell-email { display: none; }
+      .cell-id, .cell-email, .cell-age, .cell-center { display: none; }
     }
 
     @media (max-width: 900px) {
@@ -801,6 +803,11 @@
         <option value="accepted">مقبول</option>
         <option value="rejected">مرفوض</option>
       </select>
+      <select class="filter-select" id="centerFilter">
+        <option value="all">جميع المراكز</option>
+        <option value="jeddah">مركز جدة</option>
+        <option value="madinah">مركز المدينة المنورة</option>
+      </select>
       <button class="tool-btn" onclick="exportCSV()" title="تصدير Excel">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         تصدير
@@ -827,6 +834,8 @@
         <span>الاسم</span>
         <span>رقم الهاتف</span>
         <span>رقم الهوية</span>
+        <span>العمر</span>
+        <span>المركز</span>
         <span>البريد الإلكتروني</span>
         <span>الصورة</span>
         <span>الحالة</span>
@@ -939,6 +948,12 @@
       return 'pending';
     }
 
+    function getCenterText(c) {
+      if (c === 'jeddah') return 'مركز جدة';
+      if (c === 'madinah') return 'مركز المدينة المنورة';
+      return '—';
+    }
+
     function showToast(msg, type) {
       var t = document.getElementById('toast');
       var m = document.getElementById('toastMessage');
@@ -975,12 +990,14 @@
     function renderTable() {
       var apps = getApps();
       var filter = document.getElementById('statusFilter').value;
+      var centerFilter = document.getElementById('centerFilter').value;
       var query = document.getElementById('searchInput').value.trim().toLowerCase();
       var tbody = document.getElementById('tableBody');
       var checkAll = document.getElementById('checkAll');
 
       var filtered = apps;
       if (filter !== 'all') { filtered = filtered.filter(function (a) { return (a.status || 'pending') === filter; }); }
+      if (centerFilter !== 'all') { filtered = filtered.filter(function (a) { return a.center === centerFilter; }); }
       if (query) {
         filtered = filtered.filter(function (a) {
           return (a.fullName || '').toLowerCase().includes(query) || (a.phone || '').includes(query) || (a.idNumber || '').includes(query) || (a.email || '').toLowerCase().includes(query);
@@ -1012,7 +1029,7 @@
         row.className = 'table-row';
         var photoHtml = app.photo ? '<img src="' + app.photo + '" alt="\u0635\u0648\u0631\u0629" onclick="showDetail(' + app.id + ')" style="width:36px;height:36px;border-radius:6px;object-fit:cover;cursor:pointer;border:1px solid var(--glass-border);">' : '<div style="width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.9rem;">\u061F</div>';
         var s = app.status || 'pending';
-        row.innerHTML = '<div class="cell-check"><input type="checkbox" class="row-check" data-id="' + app.id + '"></div><div class="cell-name" title="' + escapeHtml(app.fullName) + '">' + escapeHtml(app.fullName) + '</div><div class="cell-phone">' + escapeHtml(app.phone) + '</div><div class="cell-id">' + escapeHtml(app.idNumber) + '</div><div class="cell-email" title="' + escapeHtml(app.email) + '">' + escapeHtml(app.email) + '</div><div class="cell-photo">' + photoHtml + '</div><div class="cell-status"><span class="status-badge ' + getStatusClass(s) + '">' + getStatusText(s) + '</span></div><div class="cell-actions"><button class="action-btn view" onclick="showDetail(' + app.id + ')" title="\u062A\u0641\u0627\u0635\u064A\u0644"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn download" onclick="downloadPhoto(' + app.id + ')" title="\u062A\u062D\u0645\u064A\u0644"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button class="action-btn delete" onclick="deleteSingle(' + app.id + ')" title="\u062D\u0630\u0641"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>';
+        row.innerHTML = '<div class="cell-check"><input type="checkbox" class="row-check" data-id="' + app.id + '"></div><div class="cell-name" title="' + escapeHtml(app.fullName) + '">' + escapeHtml(app.fullName) + '</div><div class="cell-phone">' + escapeHtml(app.phone) + '</div><div class="cell-id">' + escapeHtml(app.idNumber) + '</div><div class="cell-age">' + (app.age || '—') + '</div><div class="cell-center">' + getCenterText(app.center) + '</div><div class="cell-email" title="' + escapeHtml(app.email) + '">' + escapeHtml(app.email) + '</div><div class="cell-photo">' + photoHtml + '</div><div class="cell-status"><span class="status-badge ' + getStatusClass(s) + '">' + getStatusText(s) + '</span></div><div class="cell-actions"><button class="action-btn view" onclick="showDetail(' + app.id + ')" title="\u062A\u0641\u0627\u0635\u064A\u0644"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="action-btn download" onclick="downloadPhoto(' + app.id + ')" title="\u062A\u062D\u0645\u064A\u0644"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button><button class="action-btn delete" onclick="deleteSingle(' + app.id + ')" title="\u062D\u0630\u0641"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div>';
         tbody.appendChild(row);
       });
       document.querySelectorAll('.row-check').forEach(function (cb) { cb.addEventListener('change', updateBulkBar); });
@@ -1037,6 +1054,8 @@
         '<div class="detail-row"><div class="detail-label">\u0627\u0644\u0627\u0633\u0645</div><div class="detail-value">' + escapeHtml(app.fullName) + '</div></div>' +
         '<div class="detail-row"><div class="detail-label">\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641</div><div class="detail-value" dir="ltr" style="text-align:right;">' + escapeHtml(app.phone) + '</div></div>' +
         '<div class="detail-row"><div class="detail-label">\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064A\u0629</div><div class="detail-value">' + escapeHtml(app.idNumber) + '</div></div>' +
+        '<div class="detail-row"><div class="detail-label">\u0627\u0644\u0639\u0645\u0631</div><div class="detail-value">' + (app.age || '\u2014') + '</div></div>' +
+        '<div class="detail-row"><div class="detail-label">\u0627\u0644\u0645\u0631\u0643\u0632</div><div class="detail-value">' + getCenterText(app.center) + '</div></div>' +
         '<div class="detail-row"><div class="detail-label">\u0627\u0644\u0628\u0631\u064A\u062F</div><div class="detail-value" dir="ltr" style="text-align:right;">' + escapeHtml(app.email) + '</div></div>' +
         '<div class="detail-row"><div class="detail-label">\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645</div><div class="detail-value">' + formatDate(d) + '</div></div>' +
         '<div class="detail-row"><div class="detail-label">\u0627\u0644\u062D\u0627\u0644\u0629</div><div class="detail-value"><span class="status-badge ' + getStatusClass(status) + '">' + getStatusText(status) + '</span></div></div>' + photoHtml +
@@ -1141,8 +1160,8 @@
     function exportCSV() {
       var apps = getApps();
       if (apps.length === 0) { showToast('\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A', 'error'); return; }
-      var rows = [['\u0627\u0644\u0627\u0633\u0645', '\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641', '\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064A\u0629', '\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A', '\u0627\u0644\u062D\u0627\u0644\u0629', '\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645']];
-      apps.forEach(function (a) { rows.push([a.fullName || '', a.phone || '', a.idNumber || '', a.email || '', getStatusText(a.status || 'pending'), formatDate(a.date || a.created_at)]); });
+      var rows = [['\u0627\u0644\u0627\u0633\u0645', '\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641', '\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064A\u0629', '\u0627\u0644\u0639\u0645\u0631', '\u0627\u0644\u0645\u0631\u0643\u0632', '\u0627\u0644\u0628\u0631\u064A\u062F \u0627\u0644\u0625\u0644\u0643\u062A\u0631\u0648\u0646\u064A', '\u0627\u0644\u062D\u0627\u0644\u0629', '\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645']];
+      apps.forEach(function (a) { rows.push([a.fullName || '', a.phone || '', a.idNumber || '', a.age || '', getCenterText(a.center), a.email || '', getStatusText(a.status || 'pending'), formatDate(a.date || a.created_at)]); });
       var csv = rows.map(function (r) { return r.map(function (c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(','); }).join('\r\n');
       var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
       var link = document.createElement('a');
@@ -1156,8 +1175,8 @@
       var apps = getApps();
       if (apps.length === 0) { showToast('\u0644\u0627 \u062A\u0648\u062C\u062F \u0628\u064A\u0627\u0646\u0627\u062A', 'error'); return; }
       var w = window.open('', '_blank');
-      var h = '<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>\u0627\u0644\u062A\u0642\u0631\u064A\u0631</title><style>body{font-family:sans-serif;padding:2rem;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:0.5rem;text-align:right;}th{background:#f5f5f5;}</style></head><body><h1 style="text-align:center;">DIAMOND TEAM \u2014 \u062A\u0642\u0631\u064A\u0631 \u0627\u0644\u0637\u0644\u0628\u0627\u062A</h1><p style="text-align:center;color:#666;">' + new Date().toLocaleDateString('ar-SA') + '</p><table><thead><tr><th>#</th><th>\u0627\u0644\u0627\u0633\u0645</th><th>\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641</th><th>\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064A\u0629</th><th>\u0627\u0644\u0628\u0631\u064A\u062F</th><th>\u0627\u0644\u062D\u0627\u0644\u0629</th><th>\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645</th></tr></thead><tbody>';
-      apps.forEach(function (a, i) { h += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(a.fullName) + '</td><td>' + escapeHtml(a.phone) + '</td><td>' + escapeHtml(a.idNumber) + '</td><td>' + escapeHtml(a.email) + '</td><td>' + getStatusText(a.status || 'pending') + '</td><td>' + formatDate(a.date || a.created_at) + '</td></tr>'; });
+      var h = '<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>\u0627\u0644\u062A\u0642\u0631\u064A\u0631</title><style>body{font-family:sans-serif;padding:2rem;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ddd;padding:0.5rem;text-align:right;}th{background:#f5f5f5;}</style></head><body><h1 style="text-align:center;">DIAMOND TEAM \u2014 \u062A\u0642\u0631\u064A\u0631 \u0627\u0644\u0637\u0644\u0628\u0627\u062A</h1><p style="text-align:center;color:#666;">' + new Date().toLocaleDateString('ar-SA') + '</p><table><thead><tr><th>#</th><th>\u0627\u0644\u0627\u0633\u0645</th><th>\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062A\u0641</th><th>\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064A\u0629</th><th>\u0627\u0644\u0639\u0645\u0631</th><th>\u0627\u0644\u0645\u0631\u0643\u0632</th><th>\u0627\u0644\u0628\u0631\u064A\u062F</th><th>\u0627\u0644\u062D\u0627\u0644\u0629</th><th>\u062A\u0627\u0631\u064A\u062E \u0627\u0644\u062A\u0642\u062F\u064A\u0645</th></tr></thead><tbody>';
+      apps.forEach(function (a, i) { h += '<tr><td>' + (i + 1) + '</td><td>' + escapeHtml(a.fullName) + '</td><td>' + escapeHtml(a.phone) + '</td><td>' + escapeHtml(a.idNumber) + '</td><td>' + (a.age || '') + '</td><td>' + getCenterText(a.center) + '</td><td>' + escapeHtml(a.email) + '</td><td>' + getStatusText(a.status || 'pending') + '</td><td>' + formatDate(a.date || a.created_at) + '</td></tr>'; });
       h += '</tbody></table></body></html>';
       w.document.write(h); w.document.close();
       setTimeout(function () { w.print(); }, 500);
@@ -1233,6 +1252,7 @@
 
       document.getElementById('searchInput').addEventListener('input', function () { currentPage = 1; renderTable(); });
       document.getElementById('statusFilter').addEventListener('change', function () { currentPage = 1; renderTable(); });
+      document.getElementById('centerFilter').addEventListener('change', function () { currentPage = 1; renderTable(); });
       document.getElementById('menuToggle').addEventListener('click', function () { document.getElementById('sidebar').classList.toggle('open'); });
       document.getElementById('checkAll').addEventListener('change', function () { document.querySelectorAll('.row-check').forEach(function (cb) { cb.checked = this.checked; }.bind(this)); updateBulkBar(); });
 
