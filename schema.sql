@@ -11,6 +11,8 @@ CREATE TABLE applications (
   "fullName"    TEXT NOT NULL CHECK (char_length(trim("fullName")) >= 6),
   phone         TEXT NOT NULL CHECK (phone ~ '^(05|06|07)[0-9]{8}$'),
   "idNumber"    TEXT NOT NULL CHECK (char_length(trim("idNumber")) >= 5),
+  age           INTEGER NOT NULL CHECK (age >= 15 AND age <= 90),
+  center        TEXT NOT NULL CHECK (center IN ('jeddah', 'madinah')),
   email         TEXT NOT NULL CHECK (email ~* '^[^\s@]+@[^\s@]+\.[^\s@]+$'),
   photo         TEXT,
   status        TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
@@ -23,6 +25,8 @@ COMMENT ON TABLE  applications IS 'طلبات المتقدمين للانضما�
 COMMENT ON COLUMN applications."fullName" IS 'الاسم الثلاثي';
 COMMENT ON COLUMN applications.phone IS 'رقم الهاتف (سعودي)';
 COMMENT ON COLUMN applications."idNumber" IS 'رقم الهوية';
+COMMENT ON COLUMN applications.age IS 'العمر';
+COMMENT ON COLUMN applications.center IS 'المركز: jeddah (جدة) أو madinah (المدينة المنورة)';
 COMMENT ON COLUMN applications.email IS 'البريد الإلكتروني';
 COMMENT ON COLUMN applications.photo IS 'الصورة الشخصية (Base64)';
 COMMENT ON COLUMN applications.status IS 'حالة الطلب: pending, accepted, rejected';
@@ -36,6 +40,7 @@ CREATE INDEX idx_applications_created_at ON applications (created_at DESC);
 CREATE INDEX idx_applications_phone      ON applications (phone);
 CREATE INDEX idx_applications_fullname   ON applications ("fullName" text_pattern_ops);
 CREATE INDEX idx_applications_email      ON applications (email);
+CREATE INDEX idx_applications_center     ON applications (center);
 
 -- 3. دالة لتحديث updated_at تلقائياً
 CREATE OR REPLACE FUNCTION update_updated_at()
