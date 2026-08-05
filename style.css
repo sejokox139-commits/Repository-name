@@ -306,7 +306,9 @@ label {
 
 input[type="text"],
 input[type="tel"],
-input[type="email"] {
+input[type="email"],
+input[type="number"],
+select {
   width: 100%;
   padding: 0.9rem 1.2rem;
   background: rgba(255, 255, 255, 0.04);
@@ -318,6 +320,16 @@ input[type="email"] {
   transition: all 0.3s ease;
   outline: none;
   direction: rtl;
+}
+
+select {
+  appearance: none;
+  cursor: pointer;
+}
+
+select option {
+  background: var(--dark-2, #111118);
+  color: var(--text);
 }
 
 input::placeholder {
