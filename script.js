@@ -241,6 +241,8 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
+    if (submitBtn.disabled) return;
+
     const isValid =
       validateName() &
       validatePhone() &
@@ -257,6 +259,7 @@
     }
 
     submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
 
     const appData = {
       fullName: fullName.value.trim(),
@@ -297,6 +300,7 @@
     .then(function (res) {
       submitBtn.classList.remove('loading');
       if (!res.ok) {
+        submitBtn.disabled = false;
         return res.json().catch(function () { return {}; }).then(function (err) {
           throw new Error(err.message || ('HTTP ' + res.status));
         });
@@ -305,6 +309,7 @@
     })
     .catch(function (err) {
       submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
       alert('تعذر حفظ الطلب، يرجى المحاولة مرة أخرى.\n' + err.message);
     });
   }
@@ -319,6 +324,7 @@
 
   resetBtn.addEventListener('click', function () {
     form.reset();
+    submitBtn.disabled = false;
     successOverlay.classList.remove('visible');
     clearAllErrors();
     previewContainer.classList.remove('visible');
